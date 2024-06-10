@@ -1,0 +1,5 @@
+hubspot-api-client
+pandas
+requests
+flake8
+mypy

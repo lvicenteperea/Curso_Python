@@ -1,0 +1,4 @@
+env
+credentials
+__pycache__/
+.mypy_cache
