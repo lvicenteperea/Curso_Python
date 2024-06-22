@@ -23,7 +23,7 @@ router = APIRouter(prefix="/userdb", # ver documentación para ver como hay que 
 ----------------------------------------- '''
 def busca_user_por_id(id: str):
     try:
-        user = db_client.local.users.find_one({"_id": ObjectId(id)})
+        user = db_client.users.find_one({"_id": ObjectId(id)})
         if user:
             return User(**user_schema(user))
         else:
@@ -40,7 +40,7 @@ def busca_user_por_id(id: str):
 def busca_user_por_campo(campo: str, valor: str):
     try:
         query = {campo: valor}
-        user = db_client.local.users.find_one(query)
+        user = db_client.users.find_one(query)
         if user:
             return User(**user_schema(user))
         else:
@@ -60,7 +60,7 @@ def busca_user_por_campos(campos_valores: dict):
         for campo, valor in campos_valores.items():
             query["$or"].append({campo: valor})
         
-        user = db_client.local.users.find_one(query)
+        user = db_client.users.find_one(query)
         if user:
             print(f"Usuario de BBDD {user}")
             return User(**user_schema(user))
@@ -74,17 +74,27 @@ def busca_user_por_campos(campos_valores: dict):
 # Listado de todos los usuarios
 # ***********************************************************************************************
 @router.get("/", response_model=list[User])
-async def users():
+async def users(orden: str = None):
     """
-    saca un listado con todos los usuarios
+        saca un listado con todos los usuarios
 
-    Args:
-        No hay
+        Args:
+            ordenado (bool, opcional): Si se debe devolver la lista de usuarios ordenada. Por defecto es False.
+                Ejemplo de uso:
+                    - /?ordenado=true (devuelve usuarios ordenados)
+                    - / (devuelve usuarios no ordenados)
 
-    Returns:
-        list: lista tipo User de la BBDD
+        Returns:
+            list[User]: Lista de objetos de usuario.
     """
-    return users_schema(db_client.local.users.find())
+
+    lista = users_schema(db_client.users.find())
+    print(f"***************** ORDENADO: {orden} *****************")
+    if orden:
+        #return sorted(lista, key=lambda x: x[orden])
+        return sorted(lista, key=lambda x: x[orden])
+    else:
+        return lista
 
 # ***********************************************************************************************
 # formato query, es decir va como paramentros en la url: ..../id=1
@@ -101,50 +111,40 @@ async def user(id: str):
     return busca_user_por_id(id)
 
 # ***********************************************************************************************
-@router.get("/usersname/{name}")
-async def user(name: str):
-    users = filter(lambda user: user.nombre == name, users_list)
-    try:
-        if users:
-            return users
-        else:
-            return {"error": f"No se han encontrado usuarios con el nombre {name}"}
-    except:
-        return {"error": f"Error al buscar usuarios con el nombre {name}"}
-
-# ***********************************************************************************************
 # Insertamos usuarios cuidando de que no se repita el nombre
 # ***********************************************************************************************
 @router.post("/", response_model=User, status_code=status.HTTP_201_CREATED)
 @router.post("/", response_model=User, status_code=status.HTTP_202_ACCEPTED)
 async def user(user: User):
     """
-    Inserta un usuario en BBDD sin no existe otro con el mismo nombre o con el mismo email
-    
-    Args:
-        user: tipo User de la BBDD
-    
-    Returns:
-        user: tipo User de la BBDD
+        Inserta un usuario en BBDD sin no existe otro con el mismo nombre o con el mismo email
+        
+        Args:
+            user: tipo User de la BBDD
+        
+        Returns:
+            user: tipo User de la BBDD
 
-    Raises:
+        Raises:
         HTTPException:
             - status_code 204: Si el usuario ya existe en la base de datos.
     """
     #busco si existe el usuario por NOMBRE o EMAIL
-    campos_a_buscar = {"nombre": user.nombre, "email": user.email}
-    if type(busca_user_por_campos(campos_a_buscar)) == User:
-       raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail=f"El usuario {user.nombre} - {user.email} ya existe")
+    if type(busca_user_por_campos({"nombre": user.nombre, "email": user.email})) == User:
+       raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, 
+                           #detail={"error:": f"El usuario {user.nombre} - {user.email} ya existe"}
+                           detail=f"El usuario {user.nombre} - {user.email} ya existe"
+                          )
 
     
     user_dict = dict(user)
     del user_dict["id"] # me lo cargo del diccionario porque es una inserción y no puede ir este campo, ya que se autogenera
 
     #    (creamos el registro en BB)                (recuperamos el id)
-    id = db_client.local.users.insert_one(user_dict).inserted_id
+    id = db_client.users.insert_one(user_dict).inserted_id
 
     # Recuperamos el usuario de BBDD y con user_schema, lo transformamos en un user JSON
-    new_user = user_schema(db_client.local.users.find_one({"_id": id})) 
+    new_user = user_schema(db_client.users.find_one({"_id": id})) 
 
     return User(**new_user)
 
@@ -168,14 +168,10 @@ async def user(user: User):
     del user_dict["id"] # me lo cargo del diccionario porque este campo no se actualiza
 
     encontrado = busca_user_por_id(user.id)
-    print("-----------------------")
-    print(type(encontrado))
-    print(encontrado)
-    print("-----------------------")
 
     if type(encontrado) == User: # es diccionario porque es el texto del error
         try:
-            db_client.local.users.find_one_and_replace({"_id": ObjectId(user.id)}, user_dict)
+            db_client.users.find_one_and_replace({"_id": ObjectId(user.id)}, user_dict)
         except:
             return {"Error:": f"No se ha actualizado el usuario {user.id} - {user.nombre}"}
     else:
@@ -200,7 +196,7 @@ async def user(id: str):
         HTTPException:
             - status_code 204: Si el usuario ya existe en la base de datos.
     """
-    found = db_client.local.users.find_one_and_delete({"_id": ObjectId(id)})
+    found = db_client.users.find_one_and_delete({"_id": ObjectId(id)})
 
     if not found:
         return {"error":f"El usuario {id} no existe"} 
