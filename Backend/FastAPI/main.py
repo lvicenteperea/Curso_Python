@@ -11,11 +11,12 @@ app = FastAPI()
 #para ejecutar esto: uvicorn main:app --reload  --> que abre un servidor, normalmente en: http://127.0.0.1:8000
 #******************************************************************************************************************
 # Routers
-from routers import products, users, users_basic_auth, users_jwt_auth
+from routers import products, users, users_basic_auth, users_jwt_auth, users_db
 app.include_router(products.router)
 app.include_router(users.router)
 app.include_router(users_basic_auth.router)
 app.include_router(users_jwt_auth.router)
+app.include_router(users_db.router)
 
 
 #******************************************************************************************************************
