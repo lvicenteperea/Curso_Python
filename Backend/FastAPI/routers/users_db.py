@@ -107,6 +107,10 @@ async def user(user: User):
     
     Returns:
         user: tipo User de la BBDD
+
+    Raises:
+        HTTPException:
+            - status_code 204: Si el usuario ya existe en la base de datos.
     """
     #busco si existe el usuario por NOMBRE o EMAIL
     campos_a_buscar = {"nombre": user.nombre, "email": user.email}
