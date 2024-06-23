@@ -5,9 +5,10 @@ def decimal_a_binnario(decimal: int):
 
     while decimal > 0:
         binario = f"{decimal % 2}{binario}"
-        decimal = decimal / 2
+        decimal //= 2
+        print(decimal)
 
-    return return "0" if binario == "" else binario
+    return "0" if binario == "" else binario
 
 
 decimal = int(input("Por favor, introduce un número entero: "))
