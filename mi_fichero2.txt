@@ -1,0 +1,4 @@
+nombre|cantidad|precio
+p1|10|12.50
+p2|1|9.20
+p3|12|2.00
