@@ -46,6 +46,25 @@ screen = [  ["🔳","🔲","🔲","🔲","🔲","🔲","🔲","🔲","🔲","�
 def tetris(screen: list):
     print_screen(screen)
 
+    rotation = 0
+
+    while (True):
+
+        event = keyboard.read_event()
+        
+        if event.name == "esc":
+            break
+        elif event.event_type == keyboard.KEY_DOWN:
+            if event.name == "down":
+                      (screen, rotation) = move_piece(screen, Movement.DOWN, rotation)
+            elif event.name == "right":
+                (screen, rotation) = move_piece(screen, Movement.RIGHT, rotation)
+            elif event.name == "left":
+                (screen, rotation) = move_piece(screen, Movement.LEFT, rotation)
+            elif event.name == "space":
+                (screen, rotation) = move_piece(screen, Movement.ROTATE, rotation)
+
+
 
 def move_piece(screen: list, movement: Movement, rotation: int) -> (list, int):
 
@@ -59,7 +78,7 @@ def move_piece(screen: list, movement: Movement, rotation: int) -> (list, int):
     
     new_rotation = rotation
     if movement is Movement.ROTATE:
-        new_rotation += 0 if rotation == 3 else rotation + 1
+        new_rotation = 0 if rotation == 3 else rotation + 1
 
     for row_index, row in enumerate(screen):
         for column_index, item in enumerate(row):
@@ -106,21 +125,4 @@ def print_screen(screen: list):
 ## *************************************************************************** ##
 ## *************************************************************************** ##
 
-rotation = 0
-
-
-
-while (True):
-    event = keyboard.read_event()
-
-    if event.name == "esc":
-        break
-    elif event.event_type == keyboard.KEY_DOWN:
-        if event.name == "down":
-            (screen, rotation) = move_piece(screen, Movement.DOWN, rotation)
-        if event.name == "right":
-            (screen, rotation) = move_piece(screen, Movement.RIGHT, rotation)
-        if event.name == "left":
-            (screen, rotation) = move_piece(screen, Movement.LEFT, rotation)
-        if event.name == "space":
-            (screen, rotation) = move_piece(screen, Movement.ROTATE, rotation)
+tetris(screen)

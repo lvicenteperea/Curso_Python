@@ -21,63 +21,49 @@ Ejercicio
 """
 
 # Función como argumento
-
-
 def apply_func(func, x):
     return func(x)
 
+print(f"01 - {apply_func(len, 'MoureDev')}")
 
-print(apply_func(len, "MoureDev"))
 
 # Retorno de función
-
-
 def apply_multiplier(n):
     def multiplier(x):
         return x * n
     return multiplier
 
-
 multiplier = apply_multiplier(2)
-print(multiplier(5))
-print(apply_multiplier(3)(2))
+print(f"02 - {multiplier(5)}")
+print(f"03 - {apply_multiplier(3)(2)}")
 
 #  Sistema
-
 numbers = [1, 3, 4, 2, 5]
 
 # map()
-
-
 def apply_double(n):
     return n * 2
 
-
-print(list(map(apply_double, numbers)))
+print(f"04 - {list(map(apply_double, numbers))}")
 
 # filter()
-
-
 def is_even(n):
     return n % 2 == 0
 
 
-print(list(filter(is_even, numbers)))
+print(f"01 - {list(filter(is_even, numbers))}")
 
 # sorted()
-
-print(sorted(numbers))
-print(sorted(numbers, reverse=True))
-print(sorted(numbers, key=lambda x: -x))
+print(f"05 - {sorted(numbers)}")
+print(f"06 - {sorted(numbers, reverse=True)}")
+print(f"07 - {sorted(numbers, key=lambda x: -x)}")
 
 # reduce()
-
-
 def sum_values(x, y):
-    return x + y + z
+    return x + y
 
 
-print(reduce(sum_values, numbers))
+print(f"08 - {reduce(sum_values, numbers)}")
 
 """
 Extra
@@ -96,31 +82,20 @@ def average(grades):
     return sum(grades) / len(grades)
 
 # Promedio
+print("09 -", list(map(lambda student: {'name': student['name'], 
+                                        'average': average(student['grades'])
+                                       },
+                         students
+                        )
+                    )
+      )
 
-
-print(
-    list(map(lambda student: {
-        "name": student["name"],
-        "average": average(student["grades"])}, students)
-    )
-)
 
 # Mejores
-
-print(
-    list(
-        map(lambda student:
-            student["name"],
-            filter(lambda student: average(student["grades"]) >= 9, students)
-            )
-    )
-)
+print(f"10 - {    list(        map(lambda student:            student['name'],            filter(lambda student: average(student['grades']) >= 9, students)            )    )}")
 
 # Fecha de nacimiento ordenada
-
-print(sorted(students, key=lambda student: datetime.strptime(
-    student["birthdate"], "%d-%m-%Y"), reverse=True))
+print(f"11 - {sorted(students, key=lambda student: datetime.strptime(    student['birthdate'], '%d-%m-%Y'), reverse=True)}")
 
 # Califiación más alta
-
-print(max(map(lambda student: max(student["grades"]), students)))
+print(f"12 - {max(map(lambda student: max(student['grades']), students))}")

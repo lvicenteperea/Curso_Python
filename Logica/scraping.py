@@ -24,10 +24,16 @@ import requests
             print(blockquote.text)
 '''    
 
+'''    
+## MIO
+
 from bs4 import BeautifulSoup
 import requests
 
-blockquotes = BeautifulSoup(requests.get("https://holamundo.day"))
+aux = requests.get("https://holamundo.day")
+print(type(aux))
+print(aux.text)
+blockquotes = BeautifulSoup(aux.text)
 print("------------------")
 print(blockquotes.text)
 print("------------------")
@@ -37,7 +43,7 @@ for blockquote in blockquotes[21:]:
     print(blockquote.text)
 
 
-'''
+
 # Realizar la solicitud HTTP a la página web
 url = "https://holamundo.day"
 response = requests.get(url)
@@ -67,3 +73,38 @@ for event in events:
     info = event.find("span", {"class": "info"}).text.strip()
     print(f"{time} | {info}")
 '''
+
+# ### IA #############
+
+# Función para hacer scraping de eventos de un día específico
+def scrape_events(url, day):
+    # Enviar una solicitud GET a la página web
+    response = requests.get(url)
+    # Analizar el contenido HTML
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    texto = soup.getText()
+
+    # Buscar la sección que contiene la fecha
+    date_section = soup.find(string=lambda text: day in texto)
+    # Buscar el padre de la sección de la fecha que debería contener los eventos
+    events_section = date_section.find_parent('section')
+    
+
+    # Buscar todos los eventos del día
+    events = events_section.find_all(string=lambda text: '|' in text)
+    
+    # Extraer y devolver los eventos
+    return [event.strip() for event in events]
+
+# URL de la página de eventos
+url = "https://holamundo.day"
+# Día que quieres buscar
+day_to_search = "7 de mayo"
+
+# Scrapear eventos para "7 de mayo"
+events = scrape_events(url, day_to_search)
+
+# Imprimir los eventos
+for event in events:
+    print(event)

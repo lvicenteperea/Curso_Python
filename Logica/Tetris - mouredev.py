@@ -27,6 +27,7 @@ def tetris():
     while(True):
 
         event = keyboard.read_event()
+        print(f"{event.event_type} - { keyboard.KEY_DOWN}")
 
         if event.name == "esc":
             break
