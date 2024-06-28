@@ -83,10 +83,8 @@ def scrape_events(url, day):
     # Analizar el contenido HTML
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    texto = soup.getText()
-
     # Buscar la sección que contiene la fecha
-    date_section = soup.find(string=lambda text: day in texto)
+    date_section = soup.find(string=lambda text: day in text)
     # Buscar el padre de la sección de la fecha que debería contener los eventos
     events_section = date_section.find_parent('section')
     
