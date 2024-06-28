@@ -1,0 +1,255 @@
+https://github.com/realpython/stack-spider/releases/tag/v1
+https://realpython.com/web-scraping-with-scrapy-and-mongodb/
+
+
+
+Rasposo
+Si está ejecutando OSX o una versión de Linux, instale Scrapy con pip (con su virtualenv activado):
+
+$ pip install Scrapy==1.0.3
+$ pip freeze > requirements.txt
+Si utiliza una máquina Windows, deberá instalar manualmente una serie de dependencias. Consulte la documentación oficial para obtener instrucciones detalladas, así como este video de YouTube que he creado.
+
+Una vez que Scrapy esté configurado, verifique su instalación ejecutando este comando en el shell de Python:
+
+>>> import scrapy
+>>> 
+¡Si no recibes ningún error entonces estás listo!
+
+PyMongo
+A continuación, instale PyMongo con pip:
+
+$ pip install pymongo
+$ pip freeze > requirements.txt
+Ahora podemos empezar a construir el rastreador.
+
+Proyecto Scrapy
+Comencemos un nuevo proyecto Scrapy:
+
+$ scrapy startproject stack
+2015-09-05 20:56:40 [scrapy] INFO: Scrapy 1.0.3 started (bot: scrapybot)
+2015-09-05 20:56:40 [scrapy] INFO: Optional features available: ssl, http11
+2015-09-05 20:56:40 [scrapy] INFO: Overridden settings: {}
+New Scrapy project 'stack' created in:
+    /stack-spider/stack
+
+You can start your first spider with:
+    cd stack
+    scrapy genspider example example.com
+Esto crea una serie de archivos y carpetas que incluyen un código básico para que pueda comenzar rápidamente:
+
+├── scrapy.cfg
+└── stack
+    ├── __init__.py
+    ├── items.py
+    ├── pipelines.py
+    ├── settings.py
+    └── spiders
+        └── __init__.py
+Especificar datos
+El archivo items.py se utiliza para definir "contenedores" de almacenamiento para los datos que planeamos extraer.
+
+La StackItem()clase hereda de Item( docs ), que básicamente tiene una serie de objetos predefinidos que Scrapy ya ha creado para nosotros:
+
+import scrapy
+
+
+class StackItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    pass
+Agreguemos algunos elementos que realmente queremos recopilar. Para cada pregunta el cliente necesita el título y la URL. Entonces, actualiza items.py así:
+
+from scrapy.item import Item, Field
+
+
+class StackItem(Item):
+    title = Field()
+    url = Field()
+
+Quitar anuncios
+Crea la araña
+Cree un archivo llamado stack_spider.py en el directorio "spiders". Aquí es donde ocurre la magia, por ejemplo, donde le diremos a Scrapy cómo encontrar los datos exactos que estamos buscando. Como puede imaginar, esto es específico de cada página web individual que desee eliminar.
+
+Comience definiendo una clase que herede de Scrapy Spidery luego agregue atributos según sea necesario:
+
+from scrapy import Spider
+
+
+class StackSpider(Spider):
+    name = "stack"
+    allowed_domains = ["stackoverflow.com"]
+    start_urls = [
+        "http://stackoverflow.com/questions?pagesize=50&sort=newest",
+    ]
+Las primeras variables se explican por sí solas ( docs ):
+
+namedefine el nombre de la Araña.
+allowed_domainscontiene las URL base de los dominios permitidos para que la araña rastree.
+start_urlses una lista de URL desde las que la araña comenzará a rastrear. Todas las URL posteriores comenzarán a partir de los datos que la araña descargue de las URL en start_urls.
+Selectores XPath
+A continuación, Scrapy utiliza selectores XPath para extraer datos de un sitio web. En otras palabras, podemos seleccionar ciertas partes de los datos HTML en función de un XPath determinado. Como se indica en la documentación de Scrapy , "XPath es un lenguaje para seleccionar nodos en documentos XML, que también se puede usar con HTML".
+
+Puede encontrar fácilmente un XPath específico utilizando las herramientas para desarrolladores de Chrome. Simplemente inspeccione un elemento HTML específico, copie el XPath y luego modifique (según sea necesario):
+
+Copiar XPath en Chrome
+Las herramientas para desarrolladores también le brindan la posibilidad de probar selectores XPath en la consola de JavaScript mediante, $xpor ejemplo $x("//img"):
+
+Cómo usar Chrome para obtener XPath de un elemento
+Nuevamente, básicamente le indicamos a Scrapy dónde comenzar a buscar información en función de un XPath definido. Naveguemos al sitio de Stack Overflow en Chrome y busquemos los selectores de XPath.
+
+Haga clic derecho en la primera pregunta y seleccione "Inspeccionar elemento":
+
+Herramientas de desarrollo del navegador: inspeccionar elementos
+Ahora toma el XPath para <div class="summary">, //*[@id="question-summary-27624141"]/div[2]y luego pruébalo en la consola de JavaScript:
+
+XPath del elemento seleccionado en las herramientas de desarrollo del navegador
+Como puedes ver, solo selecciona esa pregunta . Por lo tanto, debemos modificar el XPath para capturar todas las preguntas. ¿Alguna idea? Es simple: //div[@class="summary"]/h3. ¿Qué significa esto? Básicamente, este XPath indica: Captura todos <h3>los elementos que son hijos de un <div>que tiene una clase desummary . Prueba este XPath en la consola de JavaScript.
+
+Observe que no estamos utilizando la salida XPath real de Chrome Developer Tools. En la mayoría de los casos, el resultado es sólo un comentario adicional útil, que generalmente le indica la dirección correcta para encontrar el XPath que funcione.
+
+Ahora actualicemos el script stack_spider.py :
+
+from scrapy import Spider
+from scrapy.selector import Selector
+
+
+class StackSpider(Spider):
+    name = "stack"
+    allowed_domains = ["stackoverflow.com"]
+    start_urls = [
+        "http://stackoverflow.com/questions?pagesize=50&sort=newest",
+    ]
+
+    def parse(self, response):
+        questions = Selector(response).xpath('//div[@class="summary"]/h3')
+
+Quitar anuncios
+Extraer los datos
+Aún necesitamos analizar y extraer los datos que queremos, que se encuentran dentro de <div class="summary"><h3>. Nuevamente, actualiza stack_spider.py de la siguiente manera:
+
+from scrapy import Spider
+from scrapy.selector import Selector
+
+from stack.items import StackItem
+
+
+class StackSpider(Spider):
+    name = "stack"
+    allowed_domains = ["stackoverflow.com"]
+    start_urls = [
+        "http://stackoverflow.com/questions?pagesize=50&sort=newest",
+    ]
+
+    def parse(self, response):
+        questions = Selector(response).xpath('//div[@class="summary"]/h3')
+
+        for question in questions:
+            item = StackItem()
+            item['title'] = question.xpath(
+                'a[@class="question-hyperlink"]/text()').extract()[0]
+            item['url'] = question.xpath(
+                'a[@class="question-hyperlink"]/@href').extract()[0]
+            yield item
+````
+
+We are iterating through the `questions` and assigning the `title` and `url` values from the scraped data. Be sure to test out the XPath selectors in the JavaScript Console within Chrome Developer Tools - e.g., `$x('//div[@class="summary"]/h3/a[@class="question-hyperlink"]/text()')` and `$x('//div[@class="summary"]/h3/a[@class="question-hyperlink"]/@href')`.
+
+## Test
+
+Ready for the first test? Simply run the following command within the "stack" directory:
+
+```console
+$ scrapy crawl stack
+Junto con el seguimiento de la pila Scrapy, debería ver 50 títulos de preguntas y URL generadas. Puedes representar el resultado en un archivo JSON con este pequeño comando:
+
+$ scrapy crawl stack -o items.json -t json
+Ahora hemos implementado nuestro Spider en función de los datos que estamos buscando. Ahora necesitamos almacenar los datos extraídos dentro de MongoDB.
+
+Almacenar los datos en MongoDB
+Cada vez que se devuelve un artículo, queremos validar los datos y luego agregarlos a una colección de Mongo.
+
+El primer paso es crear la base de datos que planeamos usar para guardar todos los datos rastreados. Abra settings.py , especifique la canalización y agregue la configuración de la base de datos:
+
+ITEM_PIPELINES = ['stack.pipelines.MongoDBPipeline', ]
+
+MONGODB_SERVER = "localhost"
+MONGODB_PORT = 27017
+MONGODB_DB = "stackoverflow"
+MONGODB_COLLECTION = "questions"
+Gestión de tuberías
+Hemos configurado nuestra araña para rastrear y analizar el HTML, y hemos configurado la configuración de nuestra base de datos. Ahora tenemos que conectar los dos a través de una tubería en pipelines.py .
+
+Conectarse a la base de datos
+
+Primero, definamos un método para conectarnos realmente a la base de datos:
+
+import pymongo
+
+from scrapy.conf import settings
+
+
+class MongoDBPipeline(object):
+
+    def __init__(self):
+        connection = pymongo.MongoClient(
+            settings['MONGODB_SERVER'],
+            settings['MONGODB_PORT']
+        )
+        db = connection[settings['MONGODB_DB']]
+        self.collection = db[settings['MONGODB_COLLECTION']]
+Aquí, creamos una clase, MongoDBPipeline()y tenemos una función constructora para inicializar la clase definiendo la configuración de Mongo y luego conectándonos a la base de datos.
+
+Procesar los datos
+
+A continuación, necesitamos definir un método para procesar los datos analizados:
+
+import pymongo
+
+from scrapy.conf import settings
+from scrapy.exceptions import DropItem
+from scrapy import log
+
+
+class MongoDBPipeline(object):
+
+    def __init__(self):
+        connection = pymongo.MongoClient(
+            settings['MONGODB_SERVER'],
+            settings['MONGODB_PORT']
+        )
+        db = connection[settings['MONGODB_DB']]
+        self.collection = db[settings['MONGODB_COLLECTION']]
+
+    def process_item(self, item, spider):
+        valid = True
+        for data in item:
+            if not data:
+                valid = False
+                raise DropItem("Missing {0}!".format(data))
+        if valid:
+            self.collection.insert(dict(item))
+            log.msg("Question added to MongoDB database!",
+                    level=log.DEBUG, spider=spider)
+        return item
+Establecemos una conexión con la base de datos, descomprimimos los datos y luego los guardamos en la base de datos. ¡Ahora podemos volver a probar!
+
+
+Quitar anuncios
+Prueba
+Nuevamente, ejecute el siguiente comando dentro del directorio “stack”:
+
+$ scrapy crawl stack
+NOTA : Asegúrese de tener el demonio Mongo ejecutándose mongoden una ventana de terminal diferente.
+
+¡Hurra! Hemos almacenado con éxito nuestros datos rastreados en la base de datos:
+
+Captura de pantalla de Robomongo
+Conclusión
+Este es un ejemplo bastante simple del uso de Scrapy para rastrear y raspar una página web. El proyecto independiente real requería que el script siguiera los enlaces de paginación y raspara cada página usando CrawlSpider( docs ), lo cual es muy fácil de implementar. Intente implementar esto usted mismo y deje un comentario a continuación con el enlace al repositorio de Github para una revisión rápida del código.
+
+¿Necesitas ayuda? Comienza con este script , que está casi completo. Luego, consulta la Parte 2 para obtener la solución completa.
+
+Bonificación gratuita: haga clic aquí para descargar un esqueleto de proyecto Python + MongoDB con el código fuente completo que le muestra cómo acceder a MongoDB desde Python.
+
+Puedes descargar el código fuente completo desde el repositorio de Github . Comenta abajo con preguntas. ¡Gracias por leer!
