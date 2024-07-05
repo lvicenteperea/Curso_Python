@@ -102,3 +102,73 @@ def mi_func():
 
 #-------------------------------------------------------------
 mi_func()
+
+
+
+
+print("---------------------------------------------")
+print("  ejercicio 4. Ejemplo dado por chatGPT")
+print("---------------------------------------------")
+class MiError(Exception):
+    def __init__(self, message, details=None):
+        super().__init__(message)
+        self.message = message
+        self.details = details
+
+    def __str__(self):
+        if self.details:
+            return f"{self.message}: {self.details}"
+        return self.message
+
+def ejemplo_funcion(param):
+    try:
+        if param < 0:
+            raise ValueError("El parámetro no puede ser negativo")
+        return param * 2
+    except Exception as e:
+        return MiError("Ocurrió un error en ejemplo_funcion", str(e))
+
+# Uso de la función
+resultado = ejemplo_funcion(-5)
+if isinstance(resultado, MiError):
+    print(f"Error: {resultado}")
+else:
+    print(f"Resultado: {resultado}")
+
+
+
+
+print("---------------------------------------------")
+print("  ejercicio 5. Ejemplo dado por chatGPT y modificado por mi")
+print("---------------------------------------------")
+class MiError(Exception):
+    def __init__(self, message, details=None):
+        super().__init__(message)
+        self.message = message
+        self.details = details
+
+    def __str__(self):
+        if self.details:
+            return f"{self.message}: {self.details}"
+        return self.message
+
+def ejemplo_funcion(param):
+    if param < 0:
+        return MiError("Ocurrió un error en ejemplo_funcion", "El parámetro no puede ser negativo")
+
+    return param * 2
+
+        
+
+# Uso de la función
+resultado = ejemplo_funcion(-5)
+if isinstance(resultado, MiError):
+    print(f"Error: {resultado}")
+else:
+    print(f"Resultado: {resultado}")
+
+resultado = ejemplo_funcion(5)
+if isinstance(resultado, MiError):
+    print(f"Error: {resultado}")
+else:
+    print(f"Resultado: {resultado}")
