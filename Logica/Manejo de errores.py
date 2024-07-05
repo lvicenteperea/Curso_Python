@@ -38,6 +38,8 @@ class MiExcepcion(Exception):
   pass
 
 
+
+# ----------------------------------------------------------------------------
 def process_params(parametros: list):
 
   if len(parametros) < 3:
@@ -53,46 +55,50 @@ def process_params(parametros: list):
   print(parametros[0]/parametros[2])
 
 #-------------------------------------------------------------
+def mi_func():
+  try:
+    #print("")
+    #print("  No da eror")
+    #process_params([1,2,3])
 
-try:
-  #print("")
-  #print("  No da eror")
-  #process_params([1,2,3])
-
-  #print("")
-  #print("  error de tamaño - Comentar si se quiere ver el siguiente")
-  #process_params([1,2])
+    #print("")
+    #print("  error de tamaño - Comentar si se quiere ver el siguiente")
+    #process_params([1,2])
 
 
-  #print("")
-  #print("  Error de división - Comentar si se quiere ver el siguiente")
-  #process_params([1,0,3])
-  
-  #print("")
-  #print("  Error con excepción creada por mi 'MiExcepcion' - Comentar si se quiere ver el siguiente")
-  #process_params([1,"Texto",3])
-  
+    #print("")
+    #print("  Error de división - Comentar si se quiere ver el siguiente")
+    #process_params([1,0,3])
+    
+    #print("")
+    #print("  Error con excepción creada por mi 'MiExcepcion' - Comentar si se quiere ver el siguiente")
+    #process_params([1,"Texto",3])
+    
+
+    print("")
+    print("  Error No controlado específicamente - Comentar si se quiere ver el siguiente")
+    process_params([1, 2, "Texto"])
+   
+    
+  except ZeroDivisionError as e:
+    print(f"No se puede dividir por cero {type(e).__name__}") 
+  except IndexError as e:
+    print(f"No se han pasado suficientes parametros: {type(e).__name__}")  
+  except MiExcepcion as e:
+    print(f"Error de tipo MiExcepcion: {type(e).__name__}")  
+  except Exception as e:
+    print(f"Error inexperado {type(e).__name__}: {e}")
+  else:
+    print("")
+    print("---------- No se ha producido error.....")
+  finally:
+    print("")
+    print("---------- Esto se ejecuta siempre.....")
+
 
   print("")
-  print("  Error No controlado específicamente - Comentar si se quiere ver el siguiente")
-  process_params([1, 2, "Texto"])
-  
-except ZeroDivisionError as e:
-  print(f"No se puede dividir por cero {type(e).__name__}") 
-except IndexError as e:
-  print(f"No se han pasado suficientes parametros: {type(e).__name__}")  
-except MiExcepcion as e:
-  print(f"Error de tipo MiExcepcion: {type(e).__name__}")  
-except Exception as e:
-  print(f"Error inexperado {type(e).__name__}: {e}")
-else:
-  print("")
-  print("---------- No se ha producido error.....")
-finally:
-  print("")
-  print("---------- Esto se ejecuta siempre.....")
+  print("---------- Programa finalizado sin sacar errores o si (no lo entiendo, habiendo un Finally)")
 
 
-print("")
-print("---------- Programa finalizado sin sacar errores")
-
+#-------------------------------------------------------------
+mi_func()
