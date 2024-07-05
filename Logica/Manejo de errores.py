@@ -106,6 +106,9 @@ mi_func()
 
 
 
+print("")
+print("")
+print("")
 print("---------------------------------------------")
 print("  ejercicio 4. Ejemplo dado por chatGPT")
 print("---------------------------------------------")
@@ -136,8 +139,9 @@ else:
     print(f"Resultado: {resultado}")
 
 
-
-
+print("")
+print("")
+print("")
 print("---------------------------------------------")
 print("  ejercicio 5. Ejemplo dado por chatGPT y modificado por mi")
 print("---------------------------------------------")
@@ -170,5 +174,73 @@ else:
 resultado = ejemplo_funcion(5)
 if isinstance(resultado, MiError):
     print(f"Error: {resultado}")
+else:
+    print(f"Resultado: {resultado}")
+
+
+
+print("")
+print("")
+print("")
+print("---------------------------------------------")
+print("  ejercicio 6. Ejemplo dado por chatGPT y modificado por mi, maaaaaas")
+print("---------------------------------------------")
+class MiError(Exception):
+    def __init__(self, message, details=None, *args):
+        super().__init__(message)
+        self.message = message
+        self.details = details
+        self.args = args
+        
+        # Imprimir argumentos adicionales en el terminal
+        if args:
+            print("Argumentos adicionales:", args)
+        
+    def __str__(self):
+        base_message = self.message
+        if self.details:
+            base_message += f": {self.details}"
+        return base_message
+
+
+
+def ejemplo_funcion(param):
+    try:
+      if param < 0:
+          return MiError("Ocurrió un error en ejemplo_funcion", 
+                        "El parámetro no puede ser negativo",
+                        "Argumento extra 1", "Argumento extra 2")
+
+      return param * 2
+
+    except Exception as e:
+        return MiError("Ocurrió un error en ejemplo_funcion", str(e))
+
+# Uso de la función
+
+
+print("")
+print("---  Usando como parámetro -5")
+resultado = ejemplo_funcion(-5)
+if isinstance(resultado, MiError):
+    print(f"Error1: {resultado}")
+else:
+    print(f"Resultado: {resultado}")
+
+
+print("")
+print("---  Usando como parámetro 5")
+resultado = ejemplo_funcion(5)
+if isinstance(resultado, MiError):
+    print(f"Error2: {resultado}")
+else:
+    print(f"Resultado: {resultado}")
+
+
+print("")
+print("---  Usando como parámetro un texto")
+resultado = ejemplo_funcion("ww")
+if isinstance(resultado, MiError):
+    print(f"Error3: {resultado}")
 else:
     print(f"Resultado: {resultado}")
