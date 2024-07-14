@@ -1,4 +1,5 @@
 '''
+para asegurar copia desde portatil
 print("---------------------------------------------")
 print("  ejercicio 1")
 print("---------------------------------------------")
