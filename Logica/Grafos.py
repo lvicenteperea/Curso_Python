@@ -8,9 +8,12 @@ class Grafo:
 
     def agregar_arista(self, vertice1, vertice2):
         if vertice1 in self.vertices and vertice2 in self.vertices:
-            self.vertices[vertice1].append(vertice2)
-            self.vertices[vertice2].append(vertice1)
-    
+            if vertice2 not in self.vertices[vertice1]:  # Verificar si ya existe la arista
+                self.vertices[vertice1].append(vertice2)
+            if vertice1 not in self.vertices[vertice2]:  # Asegurarse que la conexión sea bidireccional
+                self.vertices[vertice2].append(vertice1)
+
+
     def obtener_vertices(self):
         return list(self.vertices.keys())
     
@@ -40,6 +43,7 @@ grafo.agregar_vertice(6)
 # Agregar las aristas (conexiones entre los nodos)
 grafo.agregar_arista(1, 2)
 grafo.agregar_arista(2, 3)
+grafo.agregar_arista(2, 3)
 grafo.agregar_arista(2, 5)
 grafo.agregar_arista(3, 4)
 grafo.agregar_arista(4, 5)
@@ -47,3 +51,12 @@ grafo.agregar_arista(4, 6)
 
 # Imprimir el grafo para ver su estructura
 print(grafo)
+print("")
+print("")
+print("")
+print(grafo.obtener_vertices())
+
+print("")
+print("")
+print(grafo.obtener_adyacentes(2))
+
