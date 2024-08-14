@@ -8,12 +8,12 @@
   packages = [
     # pkgs.go
     pkgs.python312
-      pkgs.python310Packages.pip
-    # pkgs.python311Packages.pip
+    # pkgs.python310Packages.pip
+      pkgs.python311Packages.pip
     # pkgs.nodejs_20
     # pkgs.nodePackages.nodemon
     pkgs.sudo
-    python312Packages.requests
+    # python312Packages.requests
   ];
 
   # Sets environment variables in the workspace
