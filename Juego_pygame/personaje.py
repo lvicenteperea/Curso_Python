@@ -11,11 +11,17 @@ class Cubo:
         self.velocidad = velocidad
         self.color = color
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+        self.imagen = pygame.image.load("./Juego_pygame/defensor.svg")
+        self.imagen = pygame.transform.scale(self.imagen, (self.ancho, self.alto))
+        self.imagen = pygame.transform.rotate(self.imagen, 90)
+
 
     def dibujar(self, ventana):
-        pygame.draw.rect(ventana, self.color, self.rect)
         if self.x > ANCHO:
             self.x = 0
         elif self.x < 0:
             self.x = ANCHO
+
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+        pygame.draw.rect(ventana, self.color, self.rect)
+        ventana.blit(self.imagen, self.x, self.y)
