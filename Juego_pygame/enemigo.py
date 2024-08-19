@@ -1,4 +1,6 @@
 import pygame
+from ventana import Ventana
+from config import DIR_IMG
 
 
 class Enemigo:
@@ -10,10 +12,17 @@ class Enemigo:
         self.velocidad = velocidad
         self.color = color
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+        self.imagen = pygame.image.load(f"{DIR_IMG}enemigo.png")
+        self.imagen = pygame.transform.scale(self.imagen, (self.ancho, self.alto))
+        # self.imagen = pygame.transform.rotate(self.imagen, 90)
 
-    def dibujar(self, ventana):
-        pygame.draw.rect(ventana, self.color, self.rect)
-        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+    def dibujar(self, ventana: Ventana):
+        pygame.draw.rect(ventana.marco, self.color, self.rect)
+        # self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+        
+        ventana.dibujar_obj(self)
+
+
 
     def mover(self):
         self.y += self.velocidad

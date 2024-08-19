@@ -2,7 +2,7 @@
 # https://www.tiktok.com/@luisetindev_/video/7399378711818112288
 import pygame 
 import random
-from config import ANCHO, ALTO, LIMITE_SUP, ENEMIGOS_FPS, TIEMPO_ENTRE_ENEMIGOS, VIDAS
+from config import ANCHO, ALTO, LIMITE_SUP, ENEMIGOS_FPS, TIEMPO_ENTRE_ENEMIGOS
 from funciones import gestionar_teclas
 from personaje import Cubo
 from enemigo import Enemigo
@@ -12,8 +12,6 @@ from bala import Balas
 def juego(ventana, puntos):
     reloj = pygame.time.Clock()
     tiempo_pasado = 0
-    vida = VIDAS
-    puntos = 0
 
     defensor = Cubo(ANCHO/2, ALTO-75)
     enemigos = []
@@ -36,29 +34,28 @@ def juego(ventana, puntos):
         ventana.marco.fill("black")    
         
         # Movimiento del defensor que depende de la tecla pulsada
-        defensor.dibujar(ventana.marco)
+        defensor.dibujar(ventana)
 
         # Movimiento de los enemigos
         for enemigo in enemigos:
-            enemigo.dibujar(ventana.marco)
+            enemigo.dibujar(ventana)
             enemigo.mover()
 
             # miramos si colisiona o sale de pantalla
             if pygame.Rect.colliderect(defensor.rect, enemigo.rect):
-                vida -= 1
                 enemigos.remove(enemigo)
-                if vida == 0:
-                    jugando = False
-                    break
+
+                if defensor.quita_vida() == 0:
+                  jugando = False
+                  break
 
             if enemigo.y > ALTO:
                 enemigos.remove(enemigo)
+                defensor.suma_puntos(-1)
 
             for bala in balas.diccionario:
                 if pygame.Rect.colliderect(bala.rect, enemigo.rect):
-                    puntos += 1
-                    enemigos.remove(enemigo)
-                    balas.diccionario.remove(bala)
+                    defensor.elimina_enemigo(enemigos, enemigo, balas.diccionario, bala)
 
 
         # Movimiento de las balas
@@ -67,14 +64,25 @@ def juego(ventana, puntos):
             bala.mover()
             if bala.y < LIMITE_SUP:
                 balas.diccionario.remove(bala)
+            '''
+                Esto estaba desde el principio, pero parece que me sobra....
+                if pygame.Rect.colliderect(bala.rect, enemigo.rect):
+                    try:
+                        enemigos.remove(enemigo)
+                    except Exception as e:
+                        # Habría que ver porqué pasa esto.... o pasa porque se ha podido elimiarn 14 lineas mas arriba, al eliminar enemigos
+                        print(f"Error inexperado ENEMIGO {type(e).__name__}: {e}")
 
-            if pygame.Rect.colliderect(bala.rect, enemigo.rect):
-                enemigos.remove(enemigo)
-                balas.diccionario.remove(bala)
+                    print("Seguimos")
+                    try:
+                        balas.diccionario.remove(bala)
+                    except Exception as e:
+                        print(f"Error inexperado BALAS {type(e).__name__}: {e}")
+            '''
 
-        ventana.muestra_texto(f"Vidas: {str(vida)}", 40, 16)
-        ventana.muestra_texto(f"Puntos: {str(puntos)}", ANCHO - 50, 16)
+        ventana.muestra_texto(f"Vidas: {str(defensor.vida)}", 40, 16)
+        ventana.muestra_texto(f"Puntos: {str(defensor.puntos)}", ANCHO - ((len(str(defensor.puntos))*3)+50), 16)
 
         pygame.display.update()
 
-    return puntos
+    return defensor.puntos

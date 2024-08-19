@@ -1,24 +1,22 @@
 #pip install pygame
 # https://www.tiktok.com/@luisetindev_/video/7399378711818112288
 import pygame
-from funciones import grabar_jugada
-from config import ANCHO, ALTO,TAM_FUENTE
+from funciones import grabar_jugada, lista_fichero
+from config import ANCHO, ALTO,TAM_FUENTE, DIR_DAT
 from ventana import Ventana
 from juego import juego
 
 jugar = True
 
-while jugar:
+while jugar:                                    
 
     ventana = Ventana()
     puntos = juego(ventana, 0)
 
     ventana.marco.fill("black")    
-    # ventana.muestra_texto('Cierre la ventana para salir y la tecla "j" para Jugar otra vez', ANCHO//2, ALTO//2 - 60, TAM_FUENTE)
-    # ventana.muestra_texto(f"Puntos: {str(puntos)}", ANCHO//2, ALTO//2, 70)
 
-    # pedir_nombre(ventana, "Introduce tu nombre: ")
-    grabar_jugada(ventana, f"Has conseguido {str(puntos)} PUNTOS. Introduce tu nombre: ", puntos)
+    prompt_pedir_nombre = f"Has conseguido {str(puntos)} PUNTOS. Introduce tu nombre: "
+    grabar_jugada(ventana, prompt_pedir_nombre, puntos)
 
     ventana.marco.fill("black")    
     ventana.muestra_texto('Cierre la ventana para salir y la tecla "j" para Jugar otra vez', ANCHO//2, ALTO//2, TAM_FUENTE)
