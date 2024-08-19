@@ -2,7 +2,7 @@
 # https://www.tiktok.com/@luisetindev_/video/7399378711818112288
 import pygame
 from funciones import grabar_jugada, lista_fichero
-from config import ANCHO, ALTO,TAM_FUENTE, DIR_DAT
+from config import ANCHO, ALTO,TAM_FUENTE
 from ventana import Ventana
 from juego import juego
 

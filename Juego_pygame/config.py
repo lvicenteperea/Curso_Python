@@ -5,6 +5,7 @@ ALTO = 800
 LIMITE_SUP = 30
 TAM_FUENTE = 20
 FONDO_PANTALLA = "black"
+SEPARADOR = ";"
 
 VIDAS = 5
 DEFENSOR_VELOCIDAD = 5     # cuanto MAYOR sea el número, mas rápido irá EL DEFENSOR!!

@@ -1,5 +1,5 @@
 import pygame 
-from config import VIDAS, DIR_DAT, FONDO_PANTALLA, LIMITE_SUP, TAM_FUENTE, ANCHO 
+from config import VIDAS, DIR_DAT, FONDO_PANTALLA, LIMITE_SUP, TAM_FUENTE, ANCHO, SEPARADOR
 from datetime import datetime
 
 # -----------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ def grabar_jugada(ventana, prompt, puntos):
 
     if len(nombre) > 0:
         with open(fichero, 'a') as archivo:
-            archivo.write(f"{nombre:<20} - {mis_puntos} - {fecha} - {VIDAS:>5}\n")
+            archivo.write(f"{nombre:<20} {SEPARADOR} {mis_puntos} {SEPARADOR} {fecha} {SEPARADOR} {VIDAS:>5}\n")
 
     ordenar_fic(fichero, 2, 5)
 
@@ -58,7 +58,7 @@ def ordenar_fic(fichero, columna, top_n=5):
 
     # Función de ordenación por la columna "Puntos"
     def extraer_puntos(linea):
-        return int(linea.split('-')[columna-1].strip())
+        return int(linea.split(SEPARADOR)[columna-1].strip())
 
     # Ordenar los datos por la columna "Puntos"
     datos_ordenados = sorted(datos, key=extraer_puntos, reverse=True)
