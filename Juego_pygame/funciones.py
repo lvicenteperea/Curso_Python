@@ -1,6 +1,7 @@
 import pygame 
 from config import VIDAS, DIR_DAT, FONDO_PANTALLA, LIMITE_SUP, TAM_FUENTE, ANCHO, SEPARADOR
 from datetime import datetime
+from ventana import Ventana
 
 # -----------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------
@@ -28,7 +29,7 @@ def gestionar_teclas(defensor, balas):
 
 # -----------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------
-def grabar_jugada(ventana, prompt, puntos):
+def grabar_jugada(ventana: Ventana, prompt, puntos):
 
     # Formateamos datos y pedimos el nombre del jugador
     fecha = datetime.now().strftime("%d/%m/%Y %H:%M:%S")

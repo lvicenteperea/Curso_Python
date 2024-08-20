@@ -102,7 +102,7 @@ class Ventana:
                         dato_pedido += event.unicode
 
             # Borra solo el área donde se muestra el texto ingresado
-            rect_borrar = pygame.Rect(pos_ancho - 100, pos_alto + 40, 200, 60)  # Ajusta según sea necesario
+            rect_borrar = pygame.Rect(pos_ancho - 200, pos_alto + 40, 600, 60)  # Ajusta según sea necesario
             self.marco.fill("black", rect_borrar)  # Rellena con negro solo el área donde se va a escribir
 
             # Mostrar el nombre que se está ingresando
