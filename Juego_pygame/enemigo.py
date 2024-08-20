@@ -1,6 +1,6 @@
 import pygame
 from ventana import Ventana
-from config import DIR_IMG
+from config import DIR_IMG, SONIDO_KO_ENEMIGO
 
 
 class Enemigo:
@@ -23,6 +23,11 @@ class Enemigo:
         ventana.dibujar_obj(self)
 
 
-
     def mover(self):
         self.y += self.velocidad
+
+    def muerte(self, enemigos: dict):
+        enemigos.remove(self)
+
+        SONIDO_BALA = pygame.mixer.Sound(SONIDO_KO_ENEMIGO)
+        SONIDO_BALA.play()

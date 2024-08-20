@@ -9,6 +9,8 @@ class Ventana:
     # ---------------------------------------------------------------------------------------
     def __init__(self) -> None:
         pygame.init()
+        pygame.mixer.init()
+        print("pygame.mixer.init()")
 
         self.marco = pygame.display.set_mode([ANCHO,ALTO])
         # Crear una fuente y definir el tamaño

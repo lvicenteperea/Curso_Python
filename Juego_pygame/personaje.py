@@ -1,5 +1,5 @@
 import pygame
-from config import ANCHO, DIR_IMG, VIDAS, DEFENSOR_VELOCIDAD
+from config import ANCHO, DIR_IMG, VIDAS, DEFENSOR_VELOCIDAD, SONIDO_QUITA_VIDA
 from ventana import Ventana
 from bala import Bala
 from enemigo import Enemigo
@@ -38,8 +38,12 @@ class Cubo:
     #------------------------------------------------------------------------------------
     #------------------------------------------------------------------------------------
     def quita_vida(self, vidas = 1):
-         self.vida -= vidas
-         return self.vida
+        self.vida -= vidas
+        
+        SONIDO_BALA = pygame.mixer.Sound(SONIDO_QUITA_VIDA)
+        SONIDO_BALA.play()
+        
+        return self.vida
 
 
     #------------------------------------------------------------------------------------
@@ -52,5 +56,6 @@ class Cubo:
     #------------------------------------------------------------------------------------
     def elimina_enemigo(self, enemigos: dict, enemigo: Enemigo, balas_diccionario: dict, bala: Bala):
         self.suma_puntos(5)
-        enemigos.remove(enemigo)
+        # enemigos.remove(enemigo)
+        enemigo.muerte(enemigos)
         balas_diccionario.remove(bala)

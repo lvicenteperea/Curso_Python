@@ -1,6 +1,5 @@
 import pygame
-from config import TIEMPO_ENTRE_BALAS, BALA_ANCHO, BALA_ALTO, BALA_VELOCIDAD, BALA_COLOR
-
+from config import TIEMPO_ENTRE_BALAS, BALA_ANCHO, BALA_ALTO, BALA_VELOCIDAD, BALA_COLOR, SONIDO_LASER
 
 class Bala:
     def __init__(self, x, y, ancho = BALA_ANCHO, alto = BALA_ALTO, velocidad = BALA_VELOCIDAD, color = BALA_COLOR) -> None:
@@ -30,3 +29,6 @@ class Balas:
         if pygame.time.get_ticks() - balas.ultima_bala > TIEMPO_ENTRE_BALAS:
             balas.diccionario.append(Bala(defensor.rect.centerx, defensor.rect.centery))
             balas.ultima_bala = pygame.time.get_ticks()
+            
+            SONIDO_BALA = pygame.mixer.Sound(SONIDO_LASER)
+            SONIDO_BALA.play()
