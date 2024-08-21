@@ -2,10 +2,11 @@ import pygame
 from config import VIDAS, DIR_DAT, FONDO_PANTALLA, LIMITE_SUP, TAM_FUENTE, ANCHO, SEPARADOR
 from datetime import datetime
 from ventana import Ventana
+from bala import Balas
 
 # -----------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------
-def gestionar_teclas(defensor, balas):
+def gestionar_teclas(defensor, balas: Balas):
 
     eventos = pygame.event.get()
     for evento in eventos:
@@ -23,7 +24,7 @@ def gestionar_teclas(defensor, balas):
     if teclas[pygame.K_d] or teclas[pygame.K_RIGHT]:
         defensor.x += defensor.velocidad
     if teclas[pygame.K_SPACE]:
-        balas.crear_bala(defensor, balas)
+        balas.crear_bala(defensor)
 
     return True
 

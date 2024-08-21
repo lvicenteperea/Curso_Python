@@ -25,10 +25,11 @@ class Balas:
         self.tiempo_entre_balas = tiempo_entre_balas
 
 
-    def crear_bala(self, defensor, balas):
-        if pygame.time.get_ticks() - balas.ultima_bala > TIEMPO_ENTRE_BALAS:
-            balas.diccionario.append(Bala(defensor.rect.centerx, defensor.rect.centery))
-            balas.ultima_bala = pygame.time.get_ticks()
-            
-            SONIDO_BALA = pygame.mixer.Sound(SONIDO_LASER)
-            SONIDO_BALA.play()
+    def crear_bala(self, defensor):
+        if len(self.diccionario) == 0 or len(self.diccionario) % 3 != 0:
+            if pygame.time.get_ticks() - self.ultima_bala > TIEMPO_ENTRE_BALAS:
+                self.diccionario.append(Bala(defensor.rect.centerx, defensor.rect.centery))
+                self.ultima_bala = pygame.time.get_ticks()
+                
+                SONIDO_BALA = pygame.mixer.Sound(SONIDO_LASER)
+                SONIDO_BALA.play()
