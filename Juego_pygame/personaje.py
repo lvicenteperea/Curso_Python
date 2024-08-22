@@ -59,3 +59,7 @@ class Cubo:
         # enemigos.remove(enemigo)
         enemigo.muerte(enemigos)
         balas_diccionario.remove(bala)
+
+    def aumenta_velocidad(self, miliseg = 3):
+        if self.velocidad < 18:
+            self.velocidad += miliseg

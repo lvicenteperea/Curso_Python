@@ -2,30 +2,42 @@
 # https://www.tiktok.com/@luisetindev_/video/7399378711818112288
 import pygame 
 import random
-from config import ANCHO, ALTO, LIMITE_SUP, ENEMIGOS_FPS, TIEMPO_ENTRE_ENEMIGOS
+from config import ANCHO, ALTO, LIMITE_SUP, ENEMIGOS_FPS, TIEMPO_ENTRE_ENEMIGOS, MINIMO_ENTRE_BALAS
 from funciones import gestionar_teclas
 from personaje import Cubo
 from enemigo import Enemigo
+from item import Item
 from bala import Balas
 
 
 def juego(ventana, puntos):
     reloj = pygame.time.Clock()
     tiempo_pasado = 0
+    tiempo_pasado_items = 0
 
     defensor = Cubo(ANCHO/2, ALTO-75)
     enemigos = []
     enemigo = Enemigo(random.randint(0, ANCHO), LIMITE_SUP)
     # enemigos.append(enemigo)
     balas = Balas()
+    items = []
+    item = Item(random.randint(0, ANCHO), LIMITE_SUP)
 
     jugando = True
     while jugando:
-        tiempo_pasado += reloj.tick(ENEMIGOS_FPS)
+        tiempo = reloj.tick(ENEMIGOS_FPS)
+        tiempo_pasado += tiempo
+        tiempo_pasado_items += tiempo
+
         if tiempo_pasado > TIEMPO_ENTRE_ENEMIGOS:
             enemigo = Enemigo(random.randint(0, ANCHO - enemigo.ancho), LIMITE_SUP)
             enemigos.append(enemigo)
             tiempo_pasado = 0
+
+        if tiempo_pasado_items > (TIEMPO_ENTRE_ENEMIGOS*3) and balas.tiempo_entre_balas > MINIMO_ENTRE_BALAS:
+            item = Item(random.randint(0, ANCHO - item.ancho), LIMITE_SUP)
+            items.append(item)
+            tiempo_pasado_items = 0
 
         if not gestionar_teclas(defensor, balas):
             jugando = False
@@ -80,8 +92,28 @@ def juego(ventana, puntos):
                         print(f"Error inexperado BALAS {type(e).__name__}: {e}")
             '''
 
+        for item in items:
+            item.dibujar(ventana)
+            item.mover()
+
+            # miramos si colisiona o sale de pantalla
+            if pygame.Rect.colliderect(defensor.rect, item.rect):
+                print(item.tipo)
+                if item.tipo == 1:
+                    balas.reduce_tiempo_entre_balas()
+                else:
+                    defensor.aumenta_velocidad()
+
+                items.remove(item)
+
+            if enemigo.y > ALTO:
+                items.remove(item)
+
         ventana.muestra_texto(f"Vidas: {str(defensor.vida)}", 40, 16)
+        ventana.muestra_texto(f"Balas/Velocidad: {str(balas.tiempo_entre_balas)}/{str(defensor.velocidad)}", ANCHO // 2, 16)
         ventana.muestra_texto(f"Puntos: {str(defensor.puntos)}", ANCHO - ((len(str(defensor.puntos))*3)+50), 16)
+
+
 
         pygame.display.update()
 

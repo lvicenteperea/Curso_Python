@@ -13,7 +13,8 @@ DEFENSOR_VELOCIDAD = 5     # cuanto MAYOR sea el número, mas rápido irá EL DE
 ENEMIGOS_FPS = 60           # cuanto MAYOR sea el número, mas rápido irán los bichos!!
 TIEMPO_ENTRE_ENEMIGOS = 700 # cuanto MENOR sea el número, mas bichos saldrán!!
 
-TIEMPO_ENTRE_BALAS = 70    # cuanto MENOR sea el número, mas rápido saldrán las balas!!
+TIEMPO_ENTRE_BALAS = 300     # cuanto MENOR sea el número, mas rápido saldrán las balas!!
+MINIMO_ENTRE_BALAS = 60     # Se consigue disparar mas rápido, pero nunca mas de esto.
 BALA_ANCHO = 4
 BALA_ALTO = 6
 BALA_VELOCIDAD = 10         # cuanto MAYOR sea el número, mas rápido irán las balas!!

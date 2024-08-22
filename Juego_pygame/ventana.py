@@ -119,5 +119,6 @@ class Ventana:
     # ---------------------------------------------------------------------------------------
     def dibujar_obj(self, obj):
         obj.rect = pygame.Rect(obj.x, obj.y, obj.ancho, obj.alto)
-        # pygame.draw.rect(self, obj.color, obj.rect)
-        self.marco.blit(obj.imagen, (obj.x, obj.y))
+        if hasattr(obj, 'imagen'):
+            self.marco.blit(obj.imagen, (obj.x, obj.y))
+        

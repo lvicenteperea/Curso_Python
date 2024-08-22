@@ -40,7 +40,7 @@ while jugar:
             except: # no se porqué, en el for, puede ir mucho contenido y si tocas raton o teclas especiales, var1.key no existe y casca
                 pass
                 
-# salimos de la ventana
+# salimos de la ventana              
 pygame.quit()
 
 # grabar_jugada(puntos)
