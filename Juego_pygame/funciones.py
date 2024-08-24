@@ -1,24 +1,47 @@
 import pygame 
-from config import VIDAS, DIR_DAT, FONDO_PANTALLA, LIMITE_SUP, TAM_FUENTE, ANCHO, SEPARADOR
+from config import VIDAS, DIR_DAT, FONDO_PANTALLA, LIMITE_SUP, TAM_FUENTE, ANCHO, ALTO, SEPARADOR
 from datetime import datetime
 from ventana import Ventana
 from bala import Balas
 
+
+
 # -----------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------
-def gestionar_teclas(defensor, balas: Balas):
+def pausa(ventana: Ventana):
+    paused = True
+    while paused:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if evento.type == pygame.KEYDOWN:
+                # if evento.key == pygame.K_s:
+                    paused = False  # Reanudar el juego
+
+        # (Opcional) Mostrar un mensaje de pausa
+        font = pygame.font.Font(None, 36)
+        ventana.muestra_texto("Pausa. Presiona una tecla para continuar", ANCHO // 2, ALTO // 2, TAM_FUENTE, "Courier")
+        pygame.display.update()
+
+        pygame.time.Clock().tick(5)  # Para evitar consumir demasiados recursos en la pausa
+
+
+
+# -----------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------
+def gestionar_teclas(ventana: Ventana, defensor, balas: Balas) -> str:
 
     eventos = pygame.event.get()
     for evento in eventos:
         if evento.type == pygame.QUIT:
             return False
-
+        
     teclas = pygame.key.get_pressed() # lista con las teclas pulsadas
 
-    # if teclas[pygame.K_w]:
-    #     defensor.y -= defensor.velocidad
-    # if teclas[pygame.K_s]:
-    #     defensor.y += defensor.velocidad
+    if teclas[pygame.K_p]:
+        pausa(ventana)
+
     if teclas[pygame.K_a] or teclas[pygame.K_LEFT]:
         defensor.x -= defensor.velocidad
     if teclas[pygame.K_d] or teclas[pygame.K_RIGHT]:

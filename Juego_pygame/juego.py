@@ -39,9 +39,9 @@ def juego(ventana, puntos):
             items.append(item)
             tiempo_pasado_items = 0
 
-        if not gestionar_teclas(defensor, balas):
-            jugando = False
-            break
+        if not gestionar_teclas(ventana, defensor, balas):
+                jugando = False
+                break
 
         ventana.marco.fill("black")    
         
