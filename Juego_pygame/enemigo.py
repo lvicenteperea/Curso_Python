@@ -4,7 +4,7 @@ from config import DIR_IMG, SONIDO_KO_ENEMIGO
 
 
 class Enemigo:
-    def __init__(self, x, y, ancho = 50, alto = 50, velocidad = 3, color = "purple") -> None:
+    def __init__(self, x, y, ancho = 50, alto = 50, velocidad = 2.5, color = "purple") -> None:
         self.x = x
         self.y = y
         self.ancho = ancho
