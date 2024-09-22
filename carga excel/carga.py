@@ -9,9 +9,9 @@ def conectar_db():
     try:
         conexion = mysql.connector.connect(
             host='localhost',
-            user='root',
-            password='Admin',
-            database='world'
+            user='test',
+            password='Test.01',
+            database='test'
         )
         if conexion.is_connected():
             print("Conexión exitosa a la base de datos")
@@ -31,17 +31,18 @@ def crear_tabla(cursor, nombre_tabla, df):
     # Crear el esquema SQL para la tabla
     columnas_sql = []
     for columna in df.columns:
-        tipo_dato = inferir_tipo_dato(df[columna])
-        columnas_sql.append(f"`{columna}` {tipo_dato}")
+        tipo_dato = inferir_tipo_dato(columna, df[columna])
+        columnas_sql.append(f"`{columna.replace(" ", "_")}` {tipo_dato}")
 
     columnas_definicion = ", ".join(columnas_sql)
     sql_creacion = f"CREATE TABLE IF NOT EXISTS `{nombre_tabla}` ({columnas_definicion})"
-    
+    print(f"{sql_creacion}")
+    print("")
     # Ejecutar la creación de la tabla
     cursor.execute(sql_creacion)
 
 # Inferir el tipo de dato SQL basado en los valores de la columna
-def inferir_tipo_dato(serie):
+def inferir_tipo_dato(columna, serie):
     if pd.api.types.is_integer_dtype(serie):
         return "INT"
     elif pd.api.types.is_float_dtype(serie):
@@ -49,20 +50,29 @@ def inferir_tipo_dato(serie):
     elif pd.api.types.is_datetime64_any_dtype(serie):
         return "DATETIME"
     else:
-        return "VARCHAR(255)"
+        if columna.lower() == "ingredientes": # a falta de saber cual es el valor mas alrgo en la columna
+            return "VARCHAR(4000)"
+        else:
+            return "VARCHAR(600)"
+
+
 
 # Insertar los datos del DataFrame en la tabla MySQL
 def insertar_datos(cursor, conexion, nombre_tabla, df):
-    columnas = ", ".join([f"`{col}`" for col in df.columns])
+    columnas = ", ".join([f"`{col.replace(" ", "_")}`" for col in df.columns])
     valores = ", ".join(["%s"] * len(df.columns))
     sql_insert = f"INSERT INTO `{nombre_tabla}` ({columnas}) VALUES ({valores})"
 
     # Insertar fila por fila
     for fila in df.itertuples(index=False, name=None):
+        print(f"------- {fila}")
         cursor.execute(sql_insert, fila)
     
     # Confirmar los cambios
     conexion.commit()
+
+
+
 
 # Función principal para procesar el archivo Excel y cargar en la BBDD
 def procesar_excel_y_cargar_datos(ruta_excel):
@@ -76,7 +86,8 @@ def procesar_excel_y_cargar_datos(ruta_excel):
         for nombre_pestana in xls.sheet_names:
             # Leer cada pestaña en un DataFrame
             df = pd.read_excel(xls, sheet_name=nombre_pestana)
-            
+
+            print(f"Tabla '{nombre_pestana}' -----------------------------------.")
             # Crear la tabla en MySQL
             crear_tabla(cursor, nombre_pestana, df)
             # Insertar los datos
@@ -86,7 +97,7 @@ def procesar_excel_y_cargar_datos(ruta_excel):
         cerrar_conexion(conexion)
 
 # Ruta del archivo Excel (reemplaza con la ruta correcta)
-ruta_excel = "/mnt/data/todos juntos.xlsx"
+ruta_excel = "./carga excel/todos juntos.xlsx"
 
 # Procesar el archivo Excel y cargar los datos en MySQL
 procesar_excel_y_cargar_datos(ruta_excel)
