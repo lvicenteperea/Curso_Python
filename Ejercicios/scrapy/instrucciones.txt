@@ -1,0 +1,41 @@
+Para ejecutar el spider y guardar los comentarios en un archivo JSON o CSV, utiliza:
+
+    - scrapy crawl tripadvisor -o comentarios.json
+
+Esto me ha dado error, le he puesto el error a ChatGPT y me dice:
+
+1. Crear un Proyecto de Scrapy
+Primero, asegúrate de haber creado un proyecto de Scrapy. Para ello, navega hasta el directorio donde deseas crear el proyecto y ejecuta:
+
+bash
+Copiar código
+scrapy startproject tripadvisor_project
+Este comando creará una estructura de carpetas en tripadvisor_project, que es el nombre del proyecto.
+
+2. Crear el Spider dentro del Proyecto
+Una vez creado el proyecto, navega hasta la carpeta de tu proyecto:
+
+bash
+Copiar código
+cd tripadvisor_project
+Luego, crea el spider en la carpeta de spiders:
+
+bash
+Copiar código
+scrapy genspider tripadvisor tripadvisor.com
+Esto creará un archivo tripadvisor.py dentro de tripadvisor_project/spiders. Ahora puedes copiar el código que te compartí antes en ese archivo tripadvisor.py.
+
+3. Ejecutar el Spider
+Para ejecutar el spider, asegúrate de estar en la carpeta principal del proyecto (donde está el archivo scrapy.cfg). Ejecuta el comando desde allí:
+
+bash
+Copiar código
+scrapy crawl tripadvisor -o comentarios.json
+Si todo está bien, ahora debería empezar a extraer los comentarios y guardarlos en comentarios.json.
+
+Verificar la Instalación de Scrapy
+Si sigues teniendo problemas, asegúrate de que tienes Scrapy instalado correctamente ejecutando:
+
+bash
+Copiar código
+scrapy
