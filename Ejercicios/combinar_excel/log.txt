@@ -19,3 +19,5 @@ Fin del proceso: 2024-11-01 17:35:21.720445
 2024-11-01 18:17:12.233437: Fin del proceso
 2024-11-05 20:14:20.652435: Inicio del proceso
 2024-11-05 20:14:22.353007: Fin del proceso
+2024-11-06 20:12:42.440304: Inicio del proceso
+2024-11-06 20:12:44.328488: Fin del proceso

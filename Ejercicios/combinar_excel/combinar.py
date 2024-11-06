@@ -6,7 +6,7 @@ from datetime import datetime
 # Definir las rutas de los archivos
 ruta_base = "Ejercicios/combinar_excel/"
 archivo_a = ruta_base + "LISTADO PRODUCTOS SQLPyme en TPV.xlsx"
-archivo_b = ruta_base + "Listados Productos TPVs 20240926.xlsx"
+archivo_b = ruta_base + "Listados Productos TPVs 20241105.xlsx"
 ruta_salida = ruta_base + "LISTADO_PRODUCTOS_COMBINADO.xlsx"
 ruta_log = ruta_base + "log.txt"
 
